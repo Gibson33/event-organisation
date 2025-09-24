@@ -1,9 +1,13 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import React, { useContext } from "react";
+
+import { AuthContext } from "./context/Auth.context.jsx";
 import NavBar from "./routes/NavBar";
-import Login from "./components/Login"; // create this component
+import Login from "./components/Login";
+import Signup from "./components/SignUp";
 import "./App.css";
 
-function Home() {
+function Dashboard() {
   return (
     <main className="main-content">
       <section className="event-list">
@@ -18,33 +22,60 @@ function Home() {
   );
 }
 
-function Products() {
+function AddEvent() {
   return (
     <div className="page-content">
-      <h2>Products Page</h2>
+      <h2>Add Event Page</h2>
     </div>
   );
 }
 
-function About() {
+function Help() {
   return (
     <div className="page-content">
-      <h2>About Page</h2>
+      <h2>Help Page</h2>
     </div>
   );
 }
 
 function App() {
+  const location = useLocation();
+  const { state } = useContext(AuthContext);
+
+  // hide NavBar on login + signup
+  const hideNav =
+    location.pathname === "/login" || location.pathname === "/signup";
+
   return (
     <>
-      <NavBar />
+      {!hideNav && <NavBar />}
       <Routes>
-        {/* redirect root to login */}
+        {/* default route */}
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/about" element={<About />} />
+
+        {/* auth routes */}
+        <Route
+          path="/login"
+          element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
+        />
+        <Route
+          path="/signup"
+          element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
+        />
+
+        {/* protected routes */}
+        <Route
+          path="/dashboard"
+          element={state.isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/addEvent"
+          element={state.isLoggedIn ? <AddEvent /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/help"
+          element={state.isLoggedIn ? <Help /> : <Navigate to="/login" />}
+        />
       </Routes>
     </>
   );
