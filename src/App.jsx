@@ -1,42 +1,52 @@
-import { Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import { Routes, Route, Navigate } from "react-router-dom";
+import NavBar from "./routes/NavBar";
+import Login from "./components/Login"; // create this component
 import "./App.css";
 
-function Dashboard() {
+function Home() {
   return (
     <main className="main-content">
       <section className="event-list">
         <h2>Event List</h2>
+        <p>No events yet...</p>
       </section>
       <section className="calendar">
         <h2>Calendar</h2>
+        <p>Calendar will go here</p>
       </section>
     </main>
   );
 }
 
-function AddEvent() {
-  return <h2 style={{ padding: "1rem" }}>Add Event Page (coming soon)</h2>;
+function Products() {
+  return (
+    <div className="page-content">
+      <h2>Products Page</h2>
+    </div>
+  );
 }
 
-function Help() {
-  return <h2 style={{ padding: "1rem" }}>Help Page (coming soon)</h2>;
+function About() {
+  return (
+    <div className="page-content">
+      <h2>About Page</h2>
+    </div>
+  );
 }
 
 function App() {
   return (
-    <div className="app-container">
-      <Header />
-      <div style={{ marginTop: "80px", flex: 1 }}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/add" element={<AddEvent />} />
-          <Route path="/help" element={<Help />} />
-        </Routes>
-      </div>
-      <Footer />
-    </div>
+    <>
+      <NavBar />
+      <Routes>
+        {/* redirect root to login */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
-/* header */
-.header {
+/* navbar */
+.navbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -9,7 +9,7 @@
   z-index: 1000;
 }
 
-.header ul {
+.navbar ul {
   display: flex;
   justify-content: center;
   gap: 2rem;
@@ -18,7 +18,7 @@
   padding: 0;
 }
 
-.header a {
+.navbar a {
   color: white;
   text-decoration: none;
   font-weight: bold;
@@ -27,40 +27,43 @@
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.header a:hover {
+.navbar a:hover {
   background: rgba(255, 255, 255, 0.1);
   text-decoration: none; /* cleaner hover */
 }
 
 /* active link */
-.header a.active {
+.navbar a.active {
   background: rgba(0, 0, 0, 0.5); /* subtle dark highlight */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* footer */
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #333;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-}
-
 /* layout */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 .main-content {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 1rem;
-  padding: 6rem 1rem 4rem; /* space for header and footer */
+  padding: 6rem 1rem 2rem; /* space for navbar */
+  box-sizing: border-box;
+}
+
+.event-list,
+.calendar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+/* fallback page content */
+.page-content {
+  padding: 6rem 1rem 2rem;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr; /* stack blocks vertically */
+  }
 }
