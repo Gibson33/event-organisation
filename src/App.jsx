@@ -1,69 +1,67 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import React, { useContext } from "react";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import React, { useContext, useEffect } from "react";
 
 import { AuthContext } from "./context/Auth.context.jsx";
 import NavBar from "./routes/NavBar";
 import Login from "./components/Login";
 import Signup from "./components/SignUp";
+import Dashboard from "./components/Dashboard";
+import AddEvent from "./components/AddEvent";
 import "./App.css";
-
-function Dashboard() {
-  return (
-    <main className="main-content">
-      <section className="event-list">
-        <h2>Event List</h2>
-        <p>No events yet...</p>
-      </section>
-      <section className="calendar">
-        <h2>Calendar</h2>
-        <p>Calendar will go here</p>
-      </section>
-    </main>
-  );
-}
-
-function AddEvent() {
-  return (
-    <div className="page-content">
-      <h2>Add Event Page</h2>
-    </div>
-  );
-}
 
 function Help() {
   return (
     <div className="page-content">
       <h2>Help Page</h2>
+      <p>Some helpful info or FAQs can be displayed here.</p>
     </div>
   );
 }
 
-function App() {
+export default function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state } = useContext(AuthContext);
 
-  // hide NavBar on login + signup
+  // 🧭 Auto-redirect if logged in on refresh
+  useEffect(() => {
+    if (
+      state.isLoggedIn &&
+      (location.pathname === "/login" || location.pathname === "/signup")
+    ) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [state.isLoggedIn, location.pathname, navigate]);
+
+  // Hide NavBar on login and signup pages
   const hideNav =
     location.pathname === "/login" || location.pathname === "/signup";
 
   return (
     <>
       {!hideNav && <NavBar />}
+
       <Routes>
-        {/* default route */}
+        {/* Default route */}
         <Route path="/" element={<Navigate to="/login" />} />
 
-        {/* auth routes */}
+        {/* Auth routes */}
         <Route
           path="/login"
           element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
         />
         <Route
           path="/signup"
-          element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
+          element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Signup />}
         />
 
-        {/* protected routes */}
+        {/* Protected routes */}
         <Route
           path="/dashboard"
           element={state.isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
@@ -80,5 +78,3 @@ function App() {
     </>
   );
 }
-
-export default App;

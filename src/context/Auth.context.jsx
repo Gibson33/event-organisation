@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const AuthContext = React.createContext(null);
 
@@ -9,12 +8,26 @@ const initialState = {
   loginError: null,
 };
 
-export const ContextProvider = (props) => {
-  const [state, setState] = useState(initialState);
+export const ContextProvider = ({ children }) => {
+  const [state, setState] = useState(() => {
+    // On load, check localStorage for persisted login
+    const stored = localStorage.getItem("authState");
+    return stored ? JSON.parse(stored) : initialState;
+  });
 
-  const setLoginPending = (isLoginPending) => setState({ isLoginPending });
-  const setLoginSuccess = (isLoggedIn) => setState({ isLoggedIn });
-  const setLoginError = (loginError) => setState({ loginError });
+  // Sync state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("authState", JSON.stringify(state));
+  }, [state]);
+
+  const setLoginPending = (isLoginPending) =>
+    setState((prev) => ({ ...prev, isLoginPending }));
+
+  const setLoginSuccess = (isLoggedIn) =>
+    setState((prev) => ({ ...prev, isLoggedIn }));
+
+  const setLoginError = (loginError) =>
+    setState((prev) => ({ ...prev, loginError }));
 
   const login = (email, password) => {
     setLoginPending(true);
@@ -23,7 +36,6 @@ export const ContextProvider = (props) => {
 
     fetchLogin(email, password, (error) => {
       setLoginPending(false);
-
       if (!error) {
         setLoginSuccess(true);
       } else {
@@ -33,20 +45,13 @@ export const ContextProvider = (props) => {
   };
 
   const logout = () => {
-    setLoginPending(false);
-    setLoginSuccess(false);
-    setLoginError(null);
+    setState(initialState);
+    localStorage.removeItem("authState");
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        state,
-        login,
-        logout,
-      }}
-    >
-      {props.children}
+    <AuthContext.Provider value={{ state, login, logout }}>
+      {children}
     </AuthContext.Provider>
   );
 };

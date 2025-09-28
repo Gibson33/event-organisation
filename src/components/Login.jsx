@@ -55,12 +55,12 @@ export default function Login() {
             onSubmit={(values) => {
               login(values.email, values.password);
 
-              // wait a bit for fake login, then navigate
+              // wait a bit for fake login
               setTimeout(() => {
                 if (state.isLoggedIn) {
                   navigate("/dashboard");
                 }
-              }, 1000);
+              }, 500);
             }}
             validateOnBlur={false}
             validateOnChange={false}
@@ -70,9 +70,12 @@ export default function Login() {
                 {/* Email */}
                 <Field name="email">
                   {({ field }) => (
-                    <div className="form-field">
+                    <>
                       <MDBInput
                         {...field}
+                        wrapperClass={`mb-4 ${
+                          submitCount > 0 && errors.email ? "error-border" : ""
+                        }`}
                         label="Email address"
                         type="email"
                         size="lg"
@@ -80,16 +83,21 @@ export default function Login() {
                       {submitCount > 0 && errors.email && (
                         <div className="error-text">{errors.email}</div>
                       )}
-                    </div>
+                    </>
                   )}
                 </Field>
 
                 {/* Password */}
                 <Field name="password">
                   {({ field }) => (
-                    <div className="form-field">
+                    <>
                       <MDBInput
                         {...field}
+                        wrapperClass={`mb-4 ${
+                          submitCount > 0 && errors.password
+                            ? "error-border"
+                            : ""
+                        }`}
                         label="Password"
                         type="password"
                         size="lg"
@@ -97,7 +105,7 @@ export default function Login() {
                       {submitCount > 0 && errors.password && (
                         <div className="error-text">{errors.password}</div>
                       )}
-                    </div>
+                    </>
                   )}
                 </Field>
 
@@ -116,7 +124,7 @@ export default function Login() {
                   SIGN IN
                 </MDBBtn>
 
-                {/* Feedback */}
+                {/* Feedback (optional, won’t mess UI) */}
                 {state.isLoginPending && <p>Logging in...</p>}
                 {state.loginError && (
                   <p className="error-text">{state.loginError.message}</p>
