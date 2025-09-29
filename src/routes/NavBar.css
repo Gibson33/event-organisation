@@ -33,19 +33,22 @@
   font-weight: bold;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
 }
 
-/* hover */
+/* ✅ hover — brighter background & soft text-shadow to keep text readable */
 .custom-navbar .nav-link:hover {
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.25);
+  color: #fff; /* ensure text stays white */
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
 }
 
 /* active */
 .custom-navbar .nav-link.active {
   background: rgba(0, 0, 0, 0.6);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  color: #fff;
 }
 
 /* Logout button */
@@ -63,6 +66,7 @@
 .logout-btn svg {
   width: 24px;
   height: 24px;
+  stroke: #fff;
 }
 
 .logout-btn:hover {

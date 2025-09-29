@@ -12,15 +12,16 @@ const initialState = {
 export const ContextProvider = ({ children }) => {
   const [state, setState] = useState(initialState);
 
-  // Load stored session on refresh
+  // ✅ Restore user session from localStorage when the app loads
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      setState((prev) => ({
-        ...prev,
+      setState({
         isLoggedIn: true,
+        isLoginPending: false,
+        loginError: null,
         currentUser: JSON.parse(storedUser),
-      }));
+      });
     }
   }, []);
 
@@ -38,19 +39,10 @@ export const ContextProvider = ({ children }) => {
     const newUser = { email, password, username };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
-
-    setState({
-      isLoggedIn: false,
-      isLoginPending: false,
-      loginError: null,
-      currentUser: null,
-    });
-
     return true;
   };
 
-  // ✅ UPDATED LOGIN FUNCTION
-  const login = (email, password, rememberMe) => {
+  const login = (email, password) => {
     setState((prev) => ({ ...prev, isLoginPending: true, loginError: null }));
 
     setTimeout(() => {
@@ -60,9 +52,7 @@ export const ContextProvider = ({ children }) => {
       );
 
       if (match) {
-        if (rememberMe) {
-          localStorage.setItem("currentUser", JSON.stringify(match));
-        }
+        localStorage.setItem("currentUser", JSON.stringify(match));
         setState({
           isLoggedIn: true,
           isLoginPending: false,

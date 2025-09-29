@@ -4,35 +4,46 @@ import { AuthContext } from "./Auth.context.jsx";
 const EventsContext = createContext(null);
 
 export function EventsProvider({ children }) {
-  const { state } = useContext(AuthContext);
-  const currentUserEmail = state.currentUser?.email;
+  const { state } = useContext(AuthContext); // ✅ get currentUser
+  const currentUser = state?.currentUser;
 
   const [events, setEvents] = useState([]);
 
-  // ✅ Load events for the current user on login
+  // ✅ Load events for current user from localStorage on login
   useEffect(() => {
-    if (currentUserEmail) {
-      const stored = JSON.parse(localStorage.getItem("events") || "{}");
-      setEvents(stored[currentUserEmail] || []);
+    if (currentUser) {
+      const stored = localStorage.getItem(`events_${currentUser.email}`);
+      if (stored) {
+        const parsed = JSON.parse(stored).map((ev) => ({
+          ...ev,
+          date: new Date(ev.date), // ✅ Convert back to Date
+        }));
+        setEvents(parsed);
+      } else {
+        setEvents([]);
+      }
     } else {
-      setEvents([]); // user logged out
+      setEvents([]);
     }
-  }, [currentUserEmail]);
+  }, [currentUser]);
 
-  // ✅ Sync only current user's events to localStorage when they change
+  // ✅ Save events for the current user only
   useEffect(() => {
-    if (currentUserEmail) {
-      const allEvents = JSON.parse(localStorage.getItem("events") || "{}");
-      allEvents[currentUserEmail] = events;
-      localStorage.setItem("events", JSON.stringify(allEvents));
+    if (currentUser) {
+      localStorage.setItem(
+        `events_${currentUser.email}`,
+        JSON.stringify(events)
+      );
     }
-  }, [events, currentUserEmail]);
+  }, [events, currentUser]);
 
   const addEvent = (event) => {
-    setEvents((prev) => [...prev, event]);
+    if (!currentUser) return;
+    setEvents((prev) => [...prev, { ...event, userEmail: currentUser.email }]);
   };
 
   const deleteEvent = (id) => {
+    if (!currentUser) return;
     setEvents((prev) => prev.filter((e) => e.id !== id));
   };
 

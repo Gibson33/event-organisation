@@ -29,15 +29,23 @@ export default function App() {
   const navigate = useNavigate();
   const { state } = useContext(AuthContext);
 
-  // 🧭 Auto-redirect if logged in on refresh
+  // 📝 Track last visited path (except login/signup)
   useEffect(() => {
-    if (
-      state.isLoggedIn &&
-      (location.pathname === "/login" || location.pathname === "/signup")
-    ) {
-      navigate("/dashboard", { replace: true });
+    if (location.pathname !== "/login" && location.pathname !== "/signup") {
+      localStorage.setItem("lastVisitedPath", location.pathname);
     }
-  }, [state.isLoggedIn, location.pathname, navigate]);
+  }, [location.pathname]);
+
+  const lastVisited = localStorage.getItem("lastVisitedPath") || "/dashboard";
+
+  // 🧭 On refresh, if user is logged in and lands on login/signup → go back to last visited
+  useEffect(() => {
+    if (state.isLoggedIn) {
+      if (location.pathname === "/login" || location.pathname === "/signup") {
+        navigate(lastVisited, { replace: true });
+      }
+    }
+  }, [state.isLoggedIn, location.pathname, navigate, lastVisited]);
 
   // Hide NavBar on login and signup pages
   const hideNav =
@@ -54,11 +62,19 @@ export default function App() {
         {/* Auth routes */}
         <Route
           path="/login"
-          element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
+          element={
+            state.isLoggedIn ? <Navigate to={lastVisited} replace /> : <Login />
+          }
         />
         <Route
           path="/signup"
-          element={state.isLoggedIn ? <Navigate to="/dashboard" /> : <Signup />}
+          element={
+            state.isLoggedIn ? (
+              <Navigate to={lastVisited} replace />
+            ) : (
+              <Signup />
+            )
+          }
         />
 
         {/* Protected routes */}

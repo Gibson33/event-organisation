@@ -107,18 +107,6 @@ export default function Login() {
                   )}
                 </Field>
 
-                {/* Remember Me + Forgot */}
-                <div className="d-flex justify-content-between mx-4 mb-4">
-                  <MDBCheckbox
-                    id="rememberMe"
-                    name="rememberMe"
-                    label="Remember me"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  <a href="!#">Forgot password?</a>
-                </div>
-
                 {/* Submit */}
                 <MDBBtn type="submit" className="mb-1 w-100" size="lg">
                   SIGN IN
