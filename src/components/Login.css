@@ -1,3 +1,39 @@
+.auth-page {
+  padding-top: 4rem; /* ✅ This is your top spacing */
+}
+
+.auth-row {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.img-fluid {
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.auth-form {
+  max-width: 400px; /* ✅ limits form width nicely */
+  margin: 0 auto; /* center horizontally */
+}
+
+.auth-form .form-group,
+.auth-form .mb-4 {
+  width: 100%;
+}
+
+.auth-form .mdb-input,
+.auth-form input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-form .btn {
+  max-width: 100%;
+}
+
 .divider:after,
 .divider:before {
   content: "";

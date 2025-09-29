@@ -1,7 +1,8 @@
 import { Formik, Form, Field } from "formik";
 import "./Login.css";
-import { Link } from "react-router-dom";
-import { ContextProvider } from "../context/Auth.context.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/Auth.context.jsx";
 import {
   MDBContainer,
   MDBCol,
@@ -12,11 +13,14 @@ import {
 } from "mdb-react-ui-kit";
 
 export default function Signup() {
+  const { signup, state } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   return (
     <MDBContainer fluid className="p-3 my-5">
-      <MDBRow>
-        {/* illustration */}
-        <MDBCol col="10" md="6">
+      <MDBRow className="auth-row">
+        {/* Illustration */}
+        <MDBCol col="10" md="6" className="d-flex justify-content-center">
           <img
             src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
             className="img-fluid"
@@ -24,9 +28,8 @@ export default function Signup() {
           />
         </MDBCol>
 
-        {/* form */}
-        <MDBCol col="4" md="6">
-          <h1>WELCOME TO EVENTED!</h1>
+        {/* Form */}
+        <MDBCol col="4" md="4">
           <Formik
             initialValues={{
               username: "",
@@ -60,8 +63,14 @@ export default function Signup() {
 
               return errors;
             }}
-            onSubmit={(values) => {
-              console.log("Signup attempt:", values);
+            onSubmit={(values, { setSubmitting }) => {
+              const success = signup(
+                values.email,
+                values.password,
+                values.username
+              );
+              setSubmitting(false);
+              if (success) navigate("/login");
             }}
             validateOnBlur={false}
             validateOnChange={false}
@@ -156,17 +165,19 @@ export default function Signup() {
                   )}
                 </Field>
 
-                {/* Submit */}
                 <MDBBtn type="submit" className="mb-1 w-100" size="lg">
                   SIGN UP
                 </MDBBtn>
 
-                {/* Divider */}
+                {/* 👇 Inline error message for existing email */}
+                {state.loginError && (
+                  <p className="error-text">{state.loginError.message}</p>
+                )}
+
                 <div className="divider d-flex align-items-center my-3">
                   <p className="text-center fw-bold mx-3 mb-0">OR</p>
                 </div>
 
-                {/* Go to login */}
                 <Link to="/login">
                   <MDBBtn
                     type="button"

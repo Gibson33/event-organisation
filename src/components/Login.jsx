@@ -1,7 +1,7 @@
 import { Formik, Form, Field } from "formik";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/Auth.context.jsx";
 import {
   MDBContainer,
@@ -16,12 +16,13 @@ import {
 export default function Login() {
   const { login, state } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
 
   return (
     <MDBContainer fluid className="p-3 my-5">
-      <MDBRow>
-        {/* illustration */}
-        <MDBCol col="10" md="6">
+      <MDBRow className="auth-row">
+        {/* Illustration */}
+        <MDBCol col="10" md="6" className="d-flex justify-content-center">
           <img
             src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
             className="img-fluid"
@@ -29,9 +30,8 @@ export default function Login() {
           />
         </MDBCol>
 
-        {/* form */}
-        <MDBCol col="4" md="6">
-          <h1>WELCOME BACK!</h1>
+        {/* Form */}
+        <MDBCol col="4" md="4">
           <Formik
             initialValues={{ email: "", password: "" }}
             validate={(values) => {
@@ -53,14 +53,12 @@ export default function Login() {
               return errors;
             }}
             onSubmit={(values) => {
-              login(values.email, values.password);
-
-              // wait a bit for fake login
+              login(values.email, values.password, rememberMe);
               setTimeout(() => {
                 if (state.isLoggedIn) {
                   navigate("/dashboard");
                 }
-              }, 500);
+              }, 600);
             }}
             validateOnBlur={false}
             validateOnChange={false}
@@ -109,12 +107,14 @@ export default function Login() {
                   )}
                 </Field>
 
-                {/* Options row */}
+                {/* Remember Me + Forgot */}
                 <div className="d-flex justify-content-between mx-4 mb-4">
                   <MDBCheckbox
-                    name="flexCheck"
-                    id="flexCheckDefault"
+                    id="rememberMe"
+                    name="rememberMe"
                     label="Remember me"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                   />
                   <a href="!#">Forgot password?</a>
                 </div>
@@ -124,7 +124,6 @@ export default function Login() {
                   SIGN IN
                 </MDBBtn>
 
-                {/* Feedback (optional, won’t mess UI) */}
                 {state.isLoginPending && <p>Logging in...</p>}
                 {state.loginError && (
                   <p className="error-text">{state.loginError.message}</p>
@@ -135,7 +134,6 @@ export default function Login() {
                   <p className="text-center fw-bold mx-3 mb-0">OR</p>
                 </div>
 
-                {/* Go to signup */}
                 <Link to="/signup">
                   <MDBBtn
                     type="button"

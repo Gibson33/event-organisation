@@ -6,62 +6,88 @@ const initialState = {
   isLoggedIn: false,
   isLoginPending: false,
   loginError: null,
+  currentUser: null,
 };
 
 export const ContextProvider = ({ children }) => {
-  const [state, setState] = useState(() => {
-    // On load, check localStorage for persisted login
-    const stored = localStorage.getItem("authState");
-    return stored ? JSON.parse(stored) : initialState;
-  });
+  const [state, setState] = useState(initialState);
 
-  // Sync state to localStorage whenever it changes
+  // Load stored session on refresh
   useEffect(() => {
-    localStorage.setItem("authState", JSON.stringify(state));
-  }, [state]);
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      setState((prev) => ({
+        ...prev,
+        isLoggedIn: true,
+        currentUser: JSON.parse(storedUser),
+      }));
+    }
+  }, []);
 
-  const setLoginPending = (isLoginPending) =>
-    setState((prev) => ({ ...prev, isLoginPending }));
+  const signup = (email, password, username) => {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
 
-  const setLoginSuccess = (isLoggedIn) =>
-    setState((prev) => ({ ...prev, isLoggedIn }));
+    if (users.some((u) => u.email === email)) {
+      setState((prev) => ({
+        ...prev,
+        loginError: new Error("Email already exists"),
+      }));
+      return false;
+    }
 
-  const setLoginError = (loginError) =>
-    setState((prev) => ({ ...prev, loginError }));
+    const newUser = { email, password, username };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
 
-  const login = (email, password) => {
-    setLoginPending(true);
-    setLoginSuccess(false);
-    setLoginError(null);
-
-    fetchLogin(email, password, (error) => {
-      setLoginPending(false);
-      if (!error) {
-        setLoginSuccess(true);
-      } else {
-        setLoginError(error);
-      }
+    setState({
+      isLoggedIn: false,
+      isLoginPending: false,
+      loginError: null,
+      currentUser: null,
     });
+
+    return true;
+  };
+
+  // ✅ UPDATED LOGIN FUNCTION
+  const login = (email, password, rememberMe) => {
+    setState((prev) => ({ ...prev, isLoginPending: true, loginError: null }));
+
+    setTimeout(() => {
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const match = users.find(
+        (u) => u.email === email && u.password === password
+      );
+
+      if (match) {
+        if (rememberMe) {
+          localStorage.setItem("currentUser", JSON.stringify(match));
+        }
+        setState({
+          isLoggedIn: true,
+          isLoginPending: false,
+          loginError: null,
+          currentUser: match,
+        });
+      } else {
+        setState({
+          isLoggedIn: false,
+          isLoginPending: false,
+          loginError: new Error("Invalid email or password"),
+          currentUser: null,
+        });
+      }
+    }, 500);
   };
 
   const logout = () => {
+    localStorage.removeItem("currentUser");
     setState(initialState);
-    localStorage.removeItem("authState");
   };
 
   return (
-    <AuthContext.Provider value={{ state, login, logout }}>
+    <AuthContext.Provider value={{ state, login, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-// fake login
-const fetchLogin = (email, password, callback) =>
-  setTimeout(() => {
-    if (email === "admin@gmail.com" && password === "admin12##!") {
-      return callback(null);
-    } else {
-      return callback(new Error("Invalid email and password"));
-    }
-  }, 1000);

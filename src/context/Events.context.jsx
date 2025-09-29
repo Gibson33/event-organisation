@@ -1,29 +1,37 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { AuthContext } from "./Auth.context.jsx";
 
 const EventsContext = createContext(null);
 
 export function EventsProvider({ children }) {
-  // ✅ Load from localStorage initially and rehydrate Date objects
-  const [events, setEvents] = useState(() => {
-    const stored = localStorage.getItem("events");
-    if (!stored) return [];
-    return JSON.parse(stored).map((e) => ({
-      ...e,
-      date: new Date(e.date), // convert back to Date object
-    }));
-  });
+  const { state } = useContext(AuthContext);
+  const currentUserEmail = state.currentUser?.email;
 
-  // ✅ Sync events to localStorage whenever they change
+  const [events, setEvents] = useState([]);
+
+  // ✅ Load events for the current user on login
   useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(events));
-  }, [events]);
+    if (currentUserEmail) {
+      const stored = JSON.parse(localStorage.getItem("events") || "{}");
+      setEvents(stored[currentUserEmail] || []);
+    } else {
+      setEvents([]); // user logged out
+    }
+  }, [currentUserEmail]);
 
-  // ✅ Add new event
+  // ✅ Sync only current user's events to localStorage when they change
+  useEffect(() => {
+    if (currentUserEmail) {
+      const allEvents = JSON.parse(localStorage.getItem("events") || "{}");
+      allEvents[currentUserEmail] = events;
+      localStorage.setItem("events", JSON.stringify(allEvents));
+    }
+  }, [events, currentUserEmail]);
+
   const addEvent = (event) => {
     setEvents((prev) => [...prev, event]);
   };
 
-  // ✅ Delete event by ID
   const deleteEvent = (id) => {
     setEvents((prev) => prev.filter((e) => e.id !== id));
   };
@@ -35,7 +43,6 @@ export function EventsProvider({ children }) {
   );
 }
 
-// ✅ Hook to use Events anywhere in your app
 export function useEvents() {
   const context = useContext(EventsContext);
   if (!context) {
