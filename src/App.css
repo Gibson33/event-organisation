@@ -1,29 +1,14 @@
-/* layout */
 .main-content {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 1rem;
-  padding: 6rem 1rem 2rem; /* space for navbar */
+  padding: 6rem 1rem 2rem;
   box-sizing: border-box;
 }
 
-/* .event-list,
-.calendar {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-} */
-
-/* fallback page content */
-/* .page-content {
-  padding: 6rem 1rem 2rem;
-} */
-
-/* responsive */
 @media (max-width: 768px) {
   .main-content {
-    grid-template-columns: 1fr; /* stack blocks vertically */
+    grid-template-columns: 1fr;
   }
 }

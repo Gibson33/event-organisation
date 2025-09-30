@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export const AuthContext = React.createContext(null);
 
+// === Initial Authentication State ===
 const initialState = {
   isLoggedIn: false,
   isLoginPending: false,
@@ -10,10 +11,21 @@ const initialState = {
   currentUser: null,
 };
 
+/**
+ * AuthProvider
+ * ------------
+ * A lightweight authentication context using `localStorage`.
+ * Supports:
+ *  - Signup (stores users in localStorage)
+ *  - Login/Logout (persists session in localStorage)
+ *  - Session restoration on page reload
+ *  - Inline error handling for invalid login/signup
+ *
+ */
 export const AuthProvider = ({ children }) => {
   const [state, setState] = useState(initialState);
 
-  // ✅ Restore session from localStorage
+  // Restore session from localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
@@ -25,9 +37,11 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // SIGNUP
   const signup = (email, password, username) => {
     const users = JSON.parse(localStorage.getItem("users") || "[]");
 
+    // Prevent duplicate emails
     if (users.some((u) => u.email === email)) {
       setState((prev) => ({
         ...prev,
@@ -42,6 +56,7 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
+  // LOGIN
   const login = (email, password) => {
     setState((prev) => ({
       ...prev,
@@ -65,19 +80,21 @@ export const AuthProvider = ({ children }) => {
       } else {
         setState((prev) => ({
           ...prev,
-          isLoggedIn: false,
           isLoginPending: false,
+          isLoggedIn: false,
           loginError: new Error("Invalid email or password"),
         }));
       }
     }, 500);
   };
 
+  // LOGOUT
   const logout = () => {
     localStorage.removeItem("currentUser");
     setState(initialState);
   };
 
+  //  CLEAR ERRORS (used when switching pages)
   const clearErrors = () => {
     setState((prev) => ({
       ...prev,
