@@ -1,18 +1,12 @@
-/* === Background & Page Layout === */
 .auth-page {
-  background: linear-gradient(
-    135deg,
-    #d8d8e8,
-    #cfcfe0
-  ); /* 🌿 Softer greyish-lavender tones */
+  background: linear-gradient(135deg, #d8d8e8, #cfcfe0);
   min-height: 100vh;
   display: flex;
-  align-items: center; /* ✅ vertical centering */
-  justify-content: center; /* ✅ horizontal centering */
-  padding: 1rem; /* small padding for mobile */
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
-/* === Centered Auth Box === */
 .auth-row {
   width: 100%;
   max-width: 1000px;
@@ -22,10 +16,9 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  margin: 0 auto; /* ✅ extra safeguard for centering */
+  margin: 0 auto;
 }
 
-/* === Left Illustration === */
 .img-fluid {
   max-height: 600px;
   width: 100%;
@@ -33,7 +26,6 @@
   display: block;
 }
 
-/* === Form Column === */
 .auth-form {
   width: 100%;
   max-width: 400px;
@@ -51,7 +43,6 @@
   font-weight: 700;
 }
 
-/* === Inputs & Buttons === */
 .auth-form .form-group,
 .auth-form .mb-4 {
   width: 100%;
@@ -75,7 +66,6 @@
   background: #365acb;
 }
 
-/* === Divider === */
 .divider:after,
 .divider:before {
   content: "";
@@ -89,14 +79,12 @@
   font-size: 0.85rem;
 }
 
-/* === Error Text === */
 .error-text {
   color: rgb(228, 81, 81);
   font-size: 0.8rem;
   margin: 0.25rem 0 0.4rem 0;
 }
 
-/* === Responsive === */
 @media (max-width: 768px) {
   .auth-row {
     flex-direction: column;
