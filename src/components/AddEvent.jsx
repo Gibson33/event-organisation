@@ -69,7 +69,7 @@ export default function AddEvent() {
       location: "",
     });
 
-    // ✅ Show toast for 3 seconds
+    // Show toast for 3 seconds
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
@@ -91,7 +91,7 @@ export default function AddEvent() {
     <div className="add-event-container">
       <h2>Add New Event</h2>
 
-      {/* === Event Form === */}
+      {/*  Event Form  */}
       <form onSubmit={handleSubmit} className="add-event-form">
         {/* Title */}
         <div className="form-group">

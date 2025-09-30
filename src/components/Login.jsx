@@ -6,11 +6,17 @@ import { AuthContext } from "../context/Auth.context.jsx";
 import Logo from "../assets/logo.webp";
 import { MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput } from "mdb-react-ui-kit";
 
+/**
+ * Login Page
+ * ----------
+ * Handles user authentication using Formik forms.
+ * Redirects users to their last visited route or dashboard after successful login.
+ */
 export default function Login() {
   const { login, state } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // ✅ Redirect after login
+  // Automatically redirect if already logged in
   useEffect(() => {
     if (state.isLoggedIn) {
       const lastVisited =
@@ -22,16 +28,21 @@ export default function Login() {
   return (
     <div className="auth-page">
       <MDBRow className="auth-row">
+        {/* Illustration */}
         <MDBCol col="10" md="6" className="d-flex justify-content-center">
           <img src={Logo} className="img-fluid" alt="Login Logo" />
         </MDBCol>
 
+        {/* Login Form */}
         <MDBCol col="4" md="6" className="auth-form">
           <h1>Welcome Back!</h1>
+
           <Formik
             initialValues={{ email: "", password: "" }}
             validate={(values) => {
               const errors = {};
+
+              // Email validation
               if (!values.email) {
                 errors.email = "Email is required";
               } else if (
@@ -40,6 +51,7 @@ export default function Login() {
                 errors.email = "Invalid email address";
               }
 
+              // Password validation
               if (!values.password) {
                 errors.password = "Password is required";
               }
@@ -54,6 +66,7 @@ export default function Login() {
           >
             {({ errors, submitCount }) => (
               <Form>
+                {/* Email Field */}
                 <Field name="email">
                   {({ field }) => (
                     <>
@@ -71,6 +84,7 @@ export default function Login() {
                   )}
                 </Field>
 
+                {/* Password Field */}
                 <Field name="password">
                   {({ field }) => (
                     <>
@@ -88,20 +102,23 @@ export default function Login() {
                   )}
                 </Field>
 
+                {/* Submit Button */}
                 <MDBBtn type="submit" className="mb-1 w-100" size="lg">
                   SIGN IN
                 </MDBBtn>
 
+                {/* Status Messages */}
                 {state.isLoginPending && <p>Logging in...</p>}
-
                 {state.loginError && (
                   <p className="error-text mb-2">{state.loginError.message}</p>
                 )}
 
+                {/* Divider */}
                 <div className="divider d-flex align-items-center my-3">
                   <p className="text-center fw-bold mx-3 mb-0">OR</p>
                 </div>
 
+                {/* Switch to Signup */}
                 <Link to="/signup">
                   <MDBBtn
                     type="button"

@@ -2,6 +2,11 @@ import { useContext } from "react";
 import { AuthContext } from "../context/Auth.context";
 import "./Help.css";
 
+/**
+ * Help Page
+ * ----------
+ * A simple informational page explaining how to use Evented.
+ */
 export default function Help() {
   const { state } = useContext(AuthContext);
 
@@ -36,16 +41,10 @@ export default function Help() {
         </ol>
 
         <p className="help-footer">
-          {state.isLoggedIn ? (
-            <>
-              Still have questions? Email{" "}
-              <a href="mailto:gabriellabolognesiza@gmail.com">
-                gabriellabolognesiza@gmail.com
-              </a>
-            </>
-          ) : (
-            <>Please sign up to get started with Evented.</>
-          )}
+          Still have questions? Email{" "}
+          <a href="mailto:gabriellabolognesiza@gmail.com">
+            gabriellabolognesiza@gmail.com
+          </a>
         </p>
       </div>
     </div>

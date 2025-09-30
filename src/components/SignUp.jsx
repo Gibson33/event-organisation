@@ -6,6 +6,13 @@ import { useContext } from "react";
 import { AuthContext } from "../context/Auth.context.jsx";
 import { MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput } from "mdb-react-ui-kit";
 
+/**
+ * Signup Page
+ * -----------
+ * Handles user registration with client-side validation.
+ * Validates email, password complexity, and matching confirmation.
+ * Redirects to login after successful signup.
+ */
 export default function Signup() {
   const { signup, state, clearErrors } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +28,7 @@ export default function Signup() {
         {/* Signup Form */}
         <MDBCol col="4" md="6" className="auth-form">
           <h1>Create Account</h1>
+
           <Formik
             initialValues={{
               username: "",
@@ -30,8 +38,11 @@ export default function Signup() {
             }}
             validate={(values) => {
               const errors = {};
+
+              // Username
               if (!values.username) errors.username = "Username is required";
 
+              // Email
               if (!values.email) {
                 errors.email = "Email is required";
               } else if (
@@ -40,6 +51,7 @@ export default function Signup() {
                 errors.email = "Invalid email address";
               }
 
+              // Password: 8+ chars, at least 1 number & 1 special character
               const passwordRegex =
                 /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
               if (!values.password) {
@@ -49,6 +61,7 @@ export default function Signup() {
                   "Password must be at least 8 characters and include a number and special character";
               }
 
+              // Confirm Password
               if (!values.confirmPassword) {
                 errors.confirmPassword = "Confirm your password";
               } else if (values.confirmPassword !== values.password) {
@@ -71,7 +84,7 @@ export default function Signup() {
           >
             {({ errors, submitCount }) => (
               <Form>
-                {/* Username */}
+                {/* Username Field */}
                 <Field name="username">
                   {({ field }) => (
                     <>
@@ -89,7 +102,7 @@ export default function Signup() {
                   )}
                 </Field>
 
-                {/* Email */}
+                {/* Email Field */}
                 <Field name="email">
                   {({ field }) => (
                     <>
@@ -107,7 +120,7 @@ export default function Signup() {
                   )}
                 </Field>
 
-                {/* Password */}
+                {/* Password Field */}
                 <Field name="password">
                   {({ field }) => (
                     <>
@@ -125,7 +138,7 @@ export default function Signup() {
                   )}
                 </Field>
 
-                {/* Confirm Password */}
+                {/* Confirm Password Field */}
                 <Field name="confirmPassword">
                   {({ field }) => (
                     <>
@@ -145,7 +158,7 @@ export default function Signup() {
                   )}
                 </Field>
 
-                {/* Submit */}
+                {/* Submit Button */}
                 <MDBBtn type="submit" className="mb-1 w-100" size="lg">
                   SIGN UP
                 </MDBBtn>
@@ -155,6 +168,7 @@ export default function Signup() {
                   <p className="error-text mb-2">{state.signupError.message}</p>
                 )}
 
+                {/* Divider */}
                 <div className="divider d-flex align-items-center my-3">
                   <p className="text-center fw-bold mx-3 mb-0">OR</p>
                 </div>
