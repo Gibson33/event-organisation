@@ -65,8 +65,28 @@ export function EventsProvider({ children }) {
     setEvents((prev) => prev.filter((e) => e.id !== id));
   };
 
+  const updateEvent = (id, updatedData) => {
+    setEvents((prev) =>
+      prev.map((e) =>
+        e.id === id
+          ? {
+              ...e,
+              ...updatedData,
+              date: new Date(
+                `${e.date.toISOString().split("T")[0]}T${
+                  updatedData.time || e.time
+                }`
+              ),
+            }
+          : e
+      )
+    );
+  };
+
   return (
-    <EventsContext.Provider value={{ events, addEvent, deleteEvent }}>
+    <EventsContext.Provider
+      value={{ events, addEvent, deleteEvent, updateEvent }}
+    >
       {children}
     </EventsContext.Provider>
   );

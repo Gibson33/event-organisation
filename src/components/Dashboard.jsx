@@ -7,21 +7,26 @@ import "./Dashboard.css";
 /**
  * Dashboard Component
  * --------------------
- * This is the calender and event list view.
- * - Displays a calendar with event indicators for each day
- * - Shows a detailed list of events for the currently selected day
- * - Allows event deletion
+ * - Displays a calendar with event indicators
+ * - Lists events for the selected day
+ * - Allows deleting and editing events
  */
 export default function Dashboard() {
-  // Track the currently selected date in the calendar
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { events, deleteEvent, updateEvent } = useEvents();
 
-  // Access global events and deleteEvent function from context
-  const { events, deleteEvent } = useEvents();
+  // Track which event is currently being edited (by ID)
+  const [editingEventId, setEditingEventId] = useState(null);
 
-  /**
-   * Group events by their date string
-   */
+  // Temp form data for editing
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    time: "",
+    location: "",
+    description: "",
+  });
+
+  /** Group events by date for calendar & list display */
   const groupedEvents = events.reduce((acc, event) => {
     const key = new Date(event.date).toDateString();
     if (!acc[key]) acc[key] = [];
@@ -29,22 +34,44 @@ export default function Dashboard() {
     return acc;
   }, {});
 
-  // Filter events for the selected calendar day
   const eventsForSelected = groupedEvents[selectedDate.toDateString()] || [];
+
+  /** Start editing a specific event */
+  const handleEdit = (ev) => {
+    setEditingEventId(ev.id);
+    setEditFormData({
+      title: ev.title,
+      time: ev.time,
+      location: ev.location || "",
+      description: ev.description || "",
+    });
+  };
+
+  /** Save changes to an event */
+  const handleSave = (id) => {
+    updateEvent(id, editFormData);
+    setEditingEventId(null);
+  };
+
+  /** Cancel editing */
+  const handleCancel = () => {
+    setEditingEventId(null);
+  };
+
+  /** Handle form field changes */
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <main className="dashboard-layout">
-      {/* Calendar Section */}
+      {/*  Calendar Section  */}
       <section className="calendar-section">
         <h3>CALENDAR</h3>
         <Calendar
           onChange={setSelectedDate}
           value={selectedDate}
-          /**
-           * tileContent: Custom rendering inside each calendar tile
-           * - Displays up to 2 events as "pills"
-           * - Shows "+X more" if there are more than 2
-           */
           tileContent={({ date }) => {
             const dayEvents = events.filter(
               (ev) => new Date(ev.date).toDateString() === date.toDateString()
@@ -70,7 +97,7 @@ export default function Dashboard() {
         />
       </section>
 
-      {/*  Events for Selected Day Section  */}
+      {/*  Event List Section  */}
       <section className="selected-events-section">
         <h3>EVENTS ON {selectedDate.toLocaleDateString()}</h3>
 
@@ -78,34 +105,90 @@ export default function Dashboard() {
           <ul className="selected-events-list">
             {eventsForSelected.map((ev) => (
               <li key={ev.id} className="selected-event-item expanded">
-                {/* Header: Time, Title, and Delete button */}
-                <div className="event-header">
-                  <div className="event-info">
-                    <span className="event-time">{ev.time}</span>
-                    <span className="event-title">{ev.title}</span>
+                {editingEventId === ev.id ? (
+                  // Edit Mode
+                  <div className="edit-form">
+                    <input
+                      type="text"
+                      name="title"
+                      value={editFormData.title}
+                      onChange={handleChange}
+                      placeholder="Event title"
+                    />
+                    <input
+                      type="time"
+                      name="time"
+                      value={editFormData.time}
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="text"
+                      name="location"
+                      value={editFormData.location}
+                      onChange={handleChange}
+                      placeholder="Location"
+                    />
+                    <textarea
+                      name="description"
+                      value={editFormData.description}
+                      onChange={handleChange}
+                      placeholder="Description"
+                    />
+                    <div className="edit-actions">
+                      <button
+                        className="btn primary small"
+                        onClick={() => handleSave(ev.id)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="btn secondary small"
+                        onClick={handleCancel}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteEvent(ev.id)}
-                    title="Delete event"
-                  >
-                    ✕
-                  </button>
-                </div>
+                ) : (
+                  // View Mode
+                  <>
+                    <div className="event-header">
+                      <div className="event-info">
+                        <span className="event-time">{ev.time}</span>
+                        <span className="event-title">{ev.title}</span>
+                      </div>
+                      <div className="event-actions">
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleEdit(ev)}
+                          title="Edit event"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="delete-btn"
+                          onClick={() => deleteEvent(ev.id)}
+                          title="Delete event"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
 
-                {/* Expanded Details: Location & Description */}
-                <div className="event-details">
-                  {ev.location && (
-                    <p>
-                      <strong>Location:</strong> {ev.location}
-                    </p>
-                  )}
-                  {ev.description && (
-                    <p>
-                      <strong>Description:</strong> {ev.description}
-                    </p>
-                  )}
-                </div>
+                    <div className="event-details">
+                      {ev.location && (
+                        <p>
+                          <strong>Location:</strong> {ev.location}
+                        </p>
+                      )}
+                      {ev.description && (
+                        <p>
+                          <strong>Description:</strong> {ev.description}
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>
