@@ -1,6 +1,10 @@
 /* === Background & Page Layout === */
 .auth-page {
-  background: linear-gradient(135deg, #8e8ee8, #8585ed);
+  background: linear-gradient(
+    135deg,
+    #d8d8e8,
+    #cfcfe0
+  ); /* 🌿 Softer greyish-lavender tones */
   min-height: 100vh;
   display: flex;
   align-items: center; /* ✅ vertical centering */

@@ -13,7 +13,6 @@
   color: #000000;
 }
 
-/* Form */
 .add-event-form .form-group {
   display: flex;
   flex-direction: column;
@@ -46,7 +45,6 @@
   min-height: 80px;
 }
 
-/* Buttons */
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -82,7 +80,6 @@
   background: #ccc;
 }
 
-/* Recently added events */
 .submitted-events {
   margin-top: 2rem;
 }
@@ -127,7 +124,6 @@
   transform: scale(1.1);
 }
 
-/* Toast Popup */
 .toast-popup {
   position: fixed;
   bottom: 20px;

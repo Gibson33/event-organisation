@@ -18,7 +18,7 @@ export default function Signup() {
           <img src={Logo} className="img-fluid" alt="Signup Logo" />
         </MDBCol>
 
-        {/* Form */}
+        {/* Signup Form */}
         <MDBCol col="4" md="6" className="auth-form">
           <h1>Create Account</h1>
           <Formik
@@ -30,11 +30,8 @@ export default function Signup() {
             }}
             validate={(values) => {
               const errors = {};
-
-              // ✅ Username
               if (!values.username) errors.username = "Username is required";
 
-              // ✅ Email
               if (!values.email) {
                 errors.email = "Email is required";
               } else if (
@@ -43,10 +40,8 @@ export default function Signup() {
                 errors.email = "Invalid email address";
               }
 
-              // ✅ Password: 8+ chars, 1 number, 1 special character
               const passwordRegex =
                 /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-
               if (!values.password) {
                 errors.password = "Password is required";
               } else if (!passwordRegex.test(values.password)) {
@@ -54,7 +49,6 @@ export default function Signup() {
                   "Password must be at least 8 characters and include a number and special character";
               }
 
-              // ✅ Confirm Password
               if (!values.confirmPassword) {
                 errors.confirmPassword = "Confirm your password";
               } else if (values.confirmPassword !== values.password) {

@@ -1,7 +1,6 @@
-// src/context/Auth.context.jsx
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect } from "react";
 
-export const AuthContext = createContext(null);
+export const AuthContext = React.createContext(null);
 
 const initialState = {
   isLoggedIn: false,
@@ -11,17 +10,18 @@ const initialState = {
   currentUser: null,
 };
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [state, setState] = useState(initialState);
 
+  // ✅ Restore session from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      setState((prev) => ({
-        ...prev,
+      setState({
+        ...initialState,
         isLoggedIn: true,
         currentUser: JSON.parse(storedUser),
-      }));
+      });
     }
   }, []);
 
@@ -39,8 +39,6 @@ export function AuthProvider({ children }) {
     const newUser = { email, password, username };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
-
-    setState((prev) => ({ ...prev, signupError: null }));
     return true;
   };
 
@@ -49,7 +47,6 @@ export function AuthProvider({ children }) {
       ...prev,
       isLoginPending: true,
       loginError: null,
-      signupError: null,
     }));
 
     setTimeout(() => {
@@ -60,20 +57,17 @@ export function AuthProvider({ children }) {
 
       if (match) {
         localStorage.setItem("currentUser", JSON.stringify(match));
-        setState((prev) => ({
-          ...prev,
+        setState({
+          ...initialState,
           isLoggedIn: true,
-          isLoginPending: false,
-          loginError: null,
           currentUser: match,
-        }));
+        });
       } else {
         setState((prev) => ({
           ...prev,
           isLoggedIn: false,
           isLoginPending: false,
           loginError: new Error("Invalid email or password"),
-          currentUser: null,
         }));
       }
     }, 500);
@@ -84,9 +78,17 @@ export function AuthProvider({ children }) {
     setState(initialState);
   };
 
+  const clearErrors = () => {
+    setState((prev) => ({
+      ...prev,
+      loginError: null,
+      signupError: null,
+    }));
+  };
+
   return (
-    <AuthContext.Provider value={{ state, login, logout, signup }}>
+    <AuthContext.Provider value={{ state, login, logout, signup, clearErrors }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};

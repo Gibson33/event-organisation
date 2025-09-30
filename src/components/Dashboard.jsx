@@ -6,10 +6,11 @@ import "./Dashboard.css";
 
 export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const { events, deleteEvent } = useEvents(); // ✅ using global events
+  const { events, deleteEvent } = useEvents();
 
+  // Group events by date string
   const groupedEvents = events.reduce((acc, event) => {
-    const key = event.date.toDateString();
+    const key = new Date(event.date).toDateString();
     if (!acc[key]) acc[key] = [];
     acc[key].push(event);
     return acc;
@@ -56,17 +57,33 @@ export default function Dashboard() {
         {eventsForSelected.length > 0 ? (
           <ul className="selected-events-list">
             {eventsForSelected.map((ev) => (
-              <li key={ev.id} className="selected-event-item">
-                <div className="event-info">
-                  <span className="event-time">{ev.time}</span>
-                  <span className="event-title">{ev.title}</span>
+              <li key={ev.id} className="selected-event-item expanded">
+                <div className="event-header">
+                  <div className="event-info">
+                    <span className="event-time">{ev.time}</span>
+                    <span className="event-title">{ev.title}</span>
+                  </div>
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteEvent(ev.id)}
+                    title="Delete event"
+                  >
+                    ✕
+                  </button>
                 </div>
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteEvent(ev.id)}
-                >
-                  ✕
-                </button>
+
+                <div className="event-details">
+                  {ev.location && (
+                    <p>
+                      <strong>Location:</strong> {ev.location}
+                    </p>
+                  )}
+                  {ev.description && (
+                    <p>
+                      <strong>Description:</strong> {ev.description}
+                    </p>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

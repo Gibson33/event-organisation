@@ -85,7 +85,7 @@
   text-align: center;
 }
 
-/* Events for selected day */
+/* Selected Events Section */
 .selected-events-section {
   background: #fff;
   border-radius: 12px;
@@ -100,13 +100,16 @@
 }
 
 .selected-event-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   background: #f7f9fc;
   border-radius: 8px;
-  padding: 0.5rem 0.7rem;
+  padding: 0.7rem;
   margin-bottom: 0.5rem;
+}
+
+.selected-event-item .event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .selected-event-item .event-info {
@@ -118,6 +121,16 @@
 .selected-event-item .event-time {
   font-weight: bold;
   color: #2b65d9;
+}
+
+.selected-event-item .event-details {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.selected-event-item .event-details p {
+  margin: 0.2rem 0;
 }
 
 .delete-btn {
