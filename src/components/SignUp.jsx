@@ -1,35 +1,26 @@
 import { Formik, Form, Field } from "formik";
 import "./Login.css";
+import Logo from "../assets/logo.webp";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/Auth.context.jsx";
-import {
-  MDBContainer,
-  MDBCol,
-  MDBRow,
-  MDBBtn,
-  MDBIcon,
-  MDBInput,
-} from "mdb-react-ui-kit";
+import { MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput } from "mdb-react-ui-kit";
 
 export default function Signup() {
   const { signup, state } = useContext(AuthContext);
   const navigate = useNavigate();
 
   return (
-    <MDBContainer fluid className="p-3 my-5">
+    <div className="auth-page">
       <MDBRow className="auth-row">
         {/* Illustration */}
         <MDBCol col="10" md="6" className="d-flex justify-content-center">
-          <img
-            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-            className="img-fluid"
-            alt="Phone illustration"
-          />
+          <img src={Logo} className="img-fluid" alt="Signup Logo" />
         </MDBCol>
 
         {/* Form */}
-        <MDBCol col="4" md="4">
+        <MDBCol col="4" md="6" className="auth-form">
+          <h1>Create Account</h1>
           <Formik
             initialValues={{
               username: "",
@@ -39,8 +30,11 @@ export default function Signup() {
             }}
             validate={(values) => {
               const errors = {};
+
+              // ✅ Username
               if (!values.username) errors.username = "Username is required";
 
+              // ✅ Email
               if (!values.email) {
                 errors.email = "Email is required";
               } else if (
@@ -49,12 +43,18 @@ export default function Signup() {
                 errors.email = "Invalid email address";
               }
 
+              // ✅ Password: 8+ chars, at least 1 number & 1 special character
+              const passwordRegex =
+                /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
               if (!values.password) {
                 errors.password = "Password is required";
-              } else if (values.password.length < 8) {
-                errors.password = "Password must be at least 8 characters";
+              } else if (!passwordRegex.test(values.password)) {
+                errors.password =
+                  "Password must be at least 8 characters and include a number and special character";
               }
 
+              // ✅ Confirm Password
               if (!values.confirmPassword) {
                 errors.confirmPassword = "Confirm your password";
               } else if (values.confirmPassword !== values.password) {
@@ -83,17 +83,13 @@ export default function Signup() {
                     <>
                       <MDBInput
                         {...field}
-                        wrapperClass={`mb-4 ${
-                          submitCount > 0 && errors.username
-                            ? "error-border"
-                            : ""
-                        }`}
+                        wrapperClass="mb-2"
                         label="Username"
                         type="text"
                         size="lg"
                       />
                       {submitCount > 0 && errors.username && (
-                        <div className="error-text">{errors.username}</div>
+                        <div className="error-text mb-2">{errors.username}</div>
                       )}
                     </>
                   )}
@@ -105,15 +101,13 @@ export default function Signup() {
                     <>
                       <MDBInput
                         {...field}
-                        wrapperClass={`mb-4 ${
-                          submitCount > 0 && errors.email ? "error-border" : ""
-                        }`}
+                        wrapperClass="mb-2"
                         label="Email address"
                         type="email"
                         size="lg"
                       />
                       {submitCount > 0 && errors.email && (
-                        <div className="error-text">{errors.email}</div>
+                        <div className="error-text mb-2">{errors.email}</div>
                       )}
                     </>
                   )}
@@ -125,17 +119,13 @@ export default function Signup() {
                     <>
                       <MDBInput
                         {...field}
-                        wrapperClass={`mb-4 ${
-                          submitCount > 0 && errors.password
-                            ? "error-border"
-                            : ""
-                        }`}
+                        wrapperClass="mb-2"
                         label="Password"
                         type="password"
                         size="lg"
                       />
                       {submitCount > 0 && errors.password && (
-                        <div className="error-text">{errors.password}</div>
+                        <div className="error-text mb-2">{errors.password}</div>
                       )}
                     </>
                   )}
@@ -147,17 +137,13 @@ export default function Signup() {
                     <>
                       <MDBInput
                         {...field}
-                        wrapperClass={`mb-4 ${
-                          submitCount > 0 && errors.confirmPassword
-                            ? "error-border"
-                            : ""
-                        }`}
+                        wrapperClass="mb-2"
                         label="Confirm Password"
                         type="password"
                         size="lg"
                       />
                       {submitCount > 0 && errors.confirmPassword && (
-                        <div className="error-text">
+                        <div className="error-text mb-2">
                           {errors.confirmPassword}
                         </div>
                       )}
@@ -169,9 +155,9 @@ export default function Signup() {
                   SIGN UP
                 </MDBBtn>
 
-                {/* 👇 Inline error message for existing email */}
+                {/* Inline error for existing email */}
                 {state.loginError && (
-                  <p className="error-text">{state.loginError.message}</p>
+                  <p className="error-text mb-2">{state.loginError.message}</p>
                 )}
 
                 <div className="divider d-flex align-items-center my-3">
@@ -194,6 +180,6 @@ export default function Signup() {
           </Formik>
         </MDBCol>
       </MDBRow>
-    </MDBContainer>
+    </div>
   );
 }

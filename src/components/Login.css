@@ -1,23 +1,53 @@
+/* === Background & Page Layout === */
 .auth-page {
-  padding-top: 4rem; /* ✅ This is your top spacing */
+  background: linear-gradient(135deg, #8e8ee8, #8585ed);
+  min-height: 100vh;
+  display: flex;
+  align-items: center; /* ✅ vertical centering */
+  justify-content: center; /* ✅ horizontal centering */
+  padding: 1rem; /* small padding for mobile */
 }
 
+/* === Centered Auth Box === */
 .auth-row {
-  min-height: 80vh;
+  width: 100%;
+  max-width: 1000px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
+  overflow: hidden;
+  margin: 0 auto; /* ✅ extra safeguard for centering */
 }
 
+/* === Left Illustration === */
 .img-fluid {
-  max-height: 400px;
-  object-fit: contain;
+  max-height: 600px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
 }
 
+/* === Form Column === */
 .auth-form {
-  max-width: 400px; /* ✅ limits form width nicely */
-  margin: 0 auto; /* center horizontally */
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+.auth-form h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #000000;
+  font-weight: 700;
+}
+
+/* === Inputs & Buttons === */
 .auth-form .form-group,
 .auth-form .mb-4 {
   width: 100%;
@@ -32,18 +62,48 @@
 
 .auth-form .btn {
   max-width: 100%;
+  background: #4e73df;
+  border: none;
+  transition: background 0.3s ease;
 }
 
+.auth-form .btn:hover {
+  background: #365acb;
+}
+
+/* === Divider === */
 .divider:after,
 .divider:before {
   content: "";
   flex: 1;
   height: 1px;
-  background: #eee;
+  background: #ddd;
 }
 
+.divider p {
+  color: #555;
+  font-size: 0.85rem;
+}
+
+/* === Error Text === */
 .error-text {
-  color: red;
+  color: rgb(228, 81, 81);
   font-size: 0.8rem;
   margin: 0.25rem 0 0.4rem 0;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .auth-row {
+    flex-direction: column;
+    max-width: 90%;
+  }
+
+  .img-fluid {
+    max-height: 250px;
+  }
+
+  .auth-form {
+    padding: 1.5rem;
+  }
 }

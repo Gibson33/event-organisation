@@ -1,13 +1,14 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "./Auth.context.jsx";
 
 const EventsContext = createContext(null);
 
 export function EventsProvider({ children }) {
-  const { state } = useContext(AuthContext); // ✅ get currentUser
+  const { state } = useContext(AuthContext);
   const currentUser = state?.currentUser;
 
   const [events, setEvents] = useState([]);
+  const hasLoaded = useRef(false); // ✅ track if initial load has happened
 
   // ✅ Load events for current user from localStorage on login
   useEffect(() => {
@@ -16,20 +17,22 @@ export function EventsProvider({ children }) {
       if (stored) {
         const parsed = JSON.parse(stored).map((ev) => ({
           ...ev,
-          date: new Date(ev.date), // ✅ Convert back to Date
+          date: new Date(ev.date),
         }));
         setEvents(parsed);
       } else {
         setEvents([]);
       }
+      hasLoaded.current = true; // ✅ mark as loaded
     } else {
       setEvents([]);
+      hasLoaded.current = false;
     }
   }, [currentUser]);
 
-  // ✅ Save events for the current user only
+  // ✅ Save events for the current user only after initial load
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && hasLoaded.current) {
       localStorage.setItem(
         `events_${currentUser.email}`,
         JSON.stringify(events)

@@ -1,0 +1,56 @@
+.help-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* takes navbar height into account */
+  padding: 2rem;
+}
+
+.help-card {
+  width: 100%;
+  max-width: 850px; /* 🟢 Increased size */
+  background: #ffffff;
+  padding: 3rem; /* 🟢 More padding for spacious feel */
+  border-radius: 24px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.help-card h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 2rem; /* 🟢 Slightly larger heading */
+}
+
+.help-card p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.help-steps {
+  margin: 1.5rem auto;
+  padding-left: 1.5rem;
+  max-width: 600px; /* keeps step text centered and narrower */
+}
+
+.help-steps li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.help-footer {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 2rem;
+}
+
+.help-footer a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.help-footer a:hover {
+  text-decoration: underline;
+}

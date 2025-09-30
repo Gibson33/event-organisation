@@ -3,15 +3,8 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/Auth.context.jsx";
-import {
-  MDBContainer,
-  MDBCol,
-  MDBRow,
-  MDBBtn,
-  MDBIcon,
-  MDBInput,
-  MDBCheckbox,
-} from "mdb-react-ui-kit";
+import Logo from "../assets/logo.webp";
+import { MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput } from "mdb-react-ui-kit";
 
 export default function Login() {
   const { login, state } = useContext(AuthContext);
@@ -19,19 +12,16 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
 
   return (
-    <MDBContainer fluid className="p-3 my-5">
+    <div className="auth-page">
       <MDBRow className="auth-row">
         {/* Illustration */}
         <MDBCol col="10" md="6" className="d-flex justify-content-center">
-          <img
-            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-            className="img-fluid"
-            alt="Phone illustration"
-          />
+          <img src={Logo} className="img-fluid" alt="Login Logo" />
         </MDBCol>
 
         {/* Form */}
-        <MDBCol col="4" md="4">
+        <MDBCol col="4" md="6" className="auth-form">
+          <h1>Welcome Back!</h1>
           <Formik
             initialValues={{ email: "", password: "" }}
             validate={(values) => {
@@ -71,9 +61,7 @@ export default function Login() {
                     <>
                       <MDBInput
                         {...field}
-                        wrapperClass={`mb-4 ${
-                          submitCount > 0 && errors.email ? "error-border" : ""
-                        }`}
+                        wrapperClass="mb-2"
                         label="Email address"
                         type="email"
                         size="lg"
@@ -91,11 +79,7 @@ export default function Login() {
                     <>
                       <MDBInput
                         {...field}
-                        wrapperClass={`mb-4 ${
-                          submitCount > 0 && errors.password
-                            ? "error-border"
-                            : ""
-                        }`}
+                        wrapperClass="mb-2"
                         label="Password"
                         type="password"
                         size="lg"
@@ -138,6 +122,6 @@ export default function Login() {
           </Formik>
         </MDBCol>
       </MDBRow>
-    </MDBContainer>
+    </div>
   );
 }

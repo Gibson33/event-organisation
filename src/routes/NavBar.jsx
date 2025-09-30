@@ -1,11 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/Auth.context.jsx";
 import "./NavBar.css";
 
 export default function NavBar() {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -14,26 +15,52 @@ export default function NavBar() {
 
   return (
     <nav className="custom-navbar">
-      <div className="nav-links-container">
+      {/* Hamburger button (only visible on mobile via CSS) */}
+      <button
+        className={`hamburger ${menuOpen ? "open" : ""}`}
+        onClick={() => setMenuOpen((prev) => !prev)}
+        aria-label="Toggle navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* Nav Links */}
+      <div className={`nav-links-container ${menuOpen ? "open" : ""}`}>
         <ul className="nav-links">
           <li>
-            <NavLink to="/dashboard" end className="nav-link">
+            <NavLink
+              to="/dashboard"
+              end
+              className="nav-link"
+              onClick={() => setMenuOpen(false)}
+            >
               Dashboard
             </NavLink>
           </li>
           <li>
-            <NavLink to="/addEvent" className="nav-link">
+            <NavLink
+              to="/addEvent"
+              className="nav-link"
+              onClick={() => setMenuOpen(false)}
+            >
               Add Event
             </NavLink>
           </li>
           <li>
-            <NavLink to="/help" className="nav-link">
+            <NavLink
+              to="/help"
+              className="nav-link"
+              onClick={() => setMenuOpen(false)}
+            >
               Help
             </NavLink>
           </li>
         </ul>
       </div>
 
+      {/* Logout Button */}
       <button className="logout-btn" onClick={handleLogout} title="Log out">
         <svg
           xmlns="http://www.w3.org/2000/svg"
