@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+// src/context/Auth.context.jsx
+import React, { useState, useEffect, createContext } from "react";
 
-export const AuthContext = React.createContext(null);
+export const AuthContext = createContext(null);
 
 const initialState = {
   isLoggedIn: false,
   isLoginPending: false,
   loginError: null,
+  signupError: null,
   currentUser: null,
 };
 
-export const ContextProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [state, setState] = useState(initialState);
 
-  // ✅ Restore user session from localStorage when the app loads
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      setState({
+      setState((prev) => ({
+        ...prev,
         isLoggedIn: true,
-        isLoginPending: false,
-        loginError: null,
         currentUser: JSON.parse(storedUser),
-      });
+      }));
     }
   }, []);
 
@@ -31,7 +31,7 @@ export const ContextProvider = ({ children }) => {
     if (users.some((u) => u.email === email)) {
       setState((prev) => ({
         ...prev,
-        loginError: new Error("Email already exists"),
+        signupError: new Error("Email already exists"),
       }));
       return false;
     }
@@ -39,11 +39,18 @@ export const ContextProvider = ({ children }) => {
     const newUser = { email, password, username };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
+
+    setState((prev) => ({ ...prev, signupError: null }));
     return true;
   };
 
   const login = (email, password) => {
-    setState((prev) => ({ ...prev, isLoginPending: true, loginError: null }));
+    setState((prev) => ({
+      ...prev,
+      isLoginPending: true,
+      loginError: null,
+      signupError: null,
+    }));
 
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("users") || "[]");
@@ -53,19 +60,21 @@ export const ContextProvider = ({ children }) => {
 
       if (match) {
         localStorage.setItem("currentUser", JSON.stringify(match));
-        setState({
+        setState((prev) => ({
+          ...prev,
           isLoggedIn: true,
           isLoginPending: false,
           loginError: null,
           currentUser: match,
-        });
+        }));
       } else {
-        setState({
+        setState((prev) => ({
+          ...prev,
           isLoggedIn: false,
           isLoginPending: false,
           loginError: new Error("Invalid email or password"),
           currentUser: null,
-        });
+        }));
       }
     }, 500);
   };
@@ -80,4 +89,4 @@ export const ContextProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}

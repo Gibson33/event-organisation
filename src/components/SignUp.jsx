@@ -7,7 +7,7 @@ import { AuthContext } from "../context/Auth.context.jsx";
 import { MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput } from "mdb-react-ui-kit";
 
 export default function Signup() {
-  const { signup, state } = useContext(AuthContext);
+  const { signup, state, clearErrors } = useContext(AuthContext);
   const navigate = useNavigate();
 
   return (
@@ -43,7 +43,7 @@ export default function Signup() {
                 errors.email = "Invalid email address";
               }
 
-              // ✅ Password: 8+ chars, at least 1 number & 1 special character
+              // ✅ Password: 8+ chars, 1 number, 1 special character
               const passwordRegex =
                 /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
 
@@ -151,20 +151,22 @@ export default function Signup() {
                   )}
                 </Field>
 
+                {/* Submit */}
                 <MDBBtn type="submit" className="mb-1 w-100" size="lg">
                   SIGN UP
                 </MDBBtn>
 
                 {/* Inline error for existing email */}
-                {state.loginError && (
-                  <p className="error-text mb-2">{state.loginError.message}</p>
+                {state.signupError && (
+                  <p className="error-text mb-2">{state.signupError.message}</p>
                 )}
 
                 <div className="divider d-flex align-items-center my-3">
                   <p className="text-center fw-bold mx-3 mb-0">OR</p>
                 </div>
 
-                <Link to="/login">
+                {/* Switch to Login */}
+                <Link to="/login" onClick={clearErrors}>
                   <MDBBtn
                     type="button"
                     className="mb-4 w-100"

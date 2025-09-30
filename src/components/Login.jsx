@@ -36,8 +36,6 @@ export default function Login() {
 
               if (!values.password) {
                 errors.password = "Password is required";
-              } else if (values.password.length < 8) {
-                errors.password = "Password must be at least 8 characters";
               }
 
               return errors;
@@ -67,7 +65,7 @@ export default function Login() {
                         size="lg"
                       />
                       {submitCount > 0 && errors.email && (
-                        <div className="error-text">{errors.email}</div>
+                        <div className="error-text mb-2">{errors.email}</div>
                       )}
                     </>
                   )}
@@ -85,7 +83,7 @@ export default function Login() {
                         size="lg"
                       />
                       {submitCount > 0 && errors.password && (
-                        <div className="error-text">{errors.password}</div>
+                        <div className="error-text mb-2">{errors.password}</div>
                       )}
                     </>
                   )}
@@ -97,8 +95,10 @@ export default function Login() {
                 </MDBBtn>
 
                 {state.isLoginPending && <p>Logging in...</p>}
+
+                {/* ✅ Show only login errors */}
                 {state.loginError && (
-                  <p className="error-text">{state.loginError.message}</p>
+                  <p className="error-text mb-2">{state.loginError.message}</p>
                 )}
 
                 {/* Divider */}

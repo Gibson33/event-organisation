@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import React, { useContext, useEffect } from "react";
-
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./context/Auth.context.jsx";
 import NavBar from "./routes/NavBar";
 import Login from "./components/Login";
@@ -13,17 +12,30 @@ import "./App.css";
 export default function App() {
   const location = useLocation();
   const { state } = useContext(AuthContext);
+  const [lastVisited, setLastVisited] = useState("/dashboard");
+  const [hydrated, setHydrated] = useState(false); // ✅ new
 
-  // 📝 Track last visited path (except login/signup)
+  // Track last visited path
   useEffect(() => {
     if (location.pathname !== "/login" && location.pathname !== "/signup") {
       localStorage.setItem("lastVisitedPath", location.pathname);
+      setLastVisited(location.pathname);
     }
   }, [location.pathname]);
 
-  const lastVisited = localStorage.getItem("lastVisitedPath") || "/dashboard";
+  // Restore lastVisited once
+  useEffect(() => {
+    const stored = localStorage.getItem("lastVisitedPath");
+    if (stored) setLastVisited(stored);
+    setHydrated(true); // ✅ only render routes once auth/localStorage is ready
+  }, []);
 
-  // Hide NavBar on login and signup pages
+  if (!hydrated) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>
+    );
+  }
+
   const hideNav =
     location.pathname === "/login" || location.pathname === "/signup";
 
@@ -32,10 +44,7 @@ export default function App() {
       {!hideNav && <NavBar />}
 
       <Routes>
-        {/* Default route */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-
-        {/* Auth routes */}
         <Route
           path="/login"
           element={
@@ -52,8 +61,6 @@ export default function App() {
             )
           }
         />
-
-        {/* Protected routes */}
         <Route
           path="/dashboard"
           element={state.isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
